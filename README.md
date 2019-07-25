@@ -1,4 +1,4 @@
-# electron-quick-start
+# electron-bootstrap-jquery-quick-start
 
 **Clone and run for a quick way to see Electron with Bootstrap, jQuery, and ipcRender-ipcMain communication in action.**
 
