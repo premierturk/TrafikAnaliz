@@ -1,12 +1,12 @@
 {
-  "name": "electron-quick-start",
+  "name": "electron-bootstrap-jquery-quick-start",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Electron-quick-start demo with Bootstrap and jQuery implementations",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/developerblue/electron-bootstrap-jquery-quick-start",
   "keywords": [
     "Electron",
     "quick",
@@ -14,7 +14,7 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
+  "author": "Michael Rooplall",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^5.0.8"
