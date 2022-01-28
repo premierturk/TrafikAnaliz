@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
+const Shortcut = require("electron-shortcut");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -13,12 +14,23 @@ function createWindow () {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation :false,
+      enableRemoteModule : true,
+      backgroundThrottling :false
     }
-  })
+  });
+
+  var shortcut = new Shortcut("Ctrl+F12", function (e) {
+    console.log("openDevTools");
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+  });
+
+  mainWindow.webContents.openDevTools();
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('app/index.html')
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()

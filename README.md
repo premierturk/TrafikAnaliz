@@ -34,3 +34,4 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 ## Electron License
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
+# TrafikAnaliz

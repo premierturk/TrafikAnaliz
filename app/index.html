@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Electron-Bootstrap-jQuery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Features-Boxed.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Highlight-Blue.css">
+    <link rel="stylesheet" href="assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+
+</head>
+
+<body>  
+
+
+    <div class="block">
+        <div class="container">
+            <div class="code-block">
+                <h5>This Project</h5>
+                <p>This project was built to integrate the Bootstrap framework and jQuery with the Electron framework.
+                </p>
+                <p>Built with the following parameters:</p>
+                <ul>
+                    <li><a href="https://github.com/electron/electron-quick-start" target="_blank">Built ontop of the
+                            electron-quick-start application</a></li>
+                    <li><a href="https://stackoverflow.com/questions/44391448/electron-require-is-not-defined"
+                            target="_blank">Fixes Electron require() is not defined in client rederer</a></li>
+                    <li><a href="https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined"
+                            target="_blank">Fixes Electron jQuery/$ is not defined in client renderer</a></li>
+                    <li><a href="https://electronjs.org/docs/api/ipc-main" target="_blank">Contains examples of
+                            communicating between ipcMain and ipcRenderer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+<button id="btnBrows">asdasd</button>
+            <div id="image-map"></div>
+
+
+        </div>
+    </div>
+
+ 
+   
+    
+
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <!-- normal script imports etc  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+
+    <script src="offset.min.js"></script>
+    <script src="geojsonproject.js"></script>
+
+
+
+
+    <script src="assets/js/main.js"></script>
+    <script src="index.js"></script>
+
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+
+    <!-- https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+
+
+
+
+</body>
+
+</html>

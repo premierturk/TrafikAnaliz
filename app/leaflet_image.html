@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Quick Start - Leaflet</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js" ></script>
+
+
+    <script src="offset.min.js"></script>
+    <script src="geojsonproject.js"></script>
+
+
+    <style>
+        html,
+        body,
+        #image-map {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div id="image-map"></div>
+    <script>
+
+        var map = L.map('image-map', {
+            minZoom: 1,
+            maxZoom: 4,
+            center: [0, 0],
+            zoom: 1,
+            crs: L.CRS.Simple,
+        });
+
+
+        var w = 5312, h = 4880, url = 'https://www.isu.gov.tr/media/cover/72.jpg';
+
+
+        var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+        var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+        var bounds = new L.LatLngBounds(southWest, northEast);
+
+
+        var overlay = L.imageOverlay(url, bounds)
+        overlay.addTo(map);
+
+
+        map.setMaxBounds(bounds);
+
+        map.on("click", function (e) {
+            // calculateImageCoordinate(e.latlng);
+
+
+            var clientLatLng = map.project(e.latlng);
+            var overlayImage = overlay._image;
+
+            var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
+            var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
+
+            var x = clientLatLng.x / xR;
+            var y = clientLatLng.y / yR;
+            console.log("CLICK : " + x, y);
+
+
+        });
+
+
+        let editableLayers = new L.FeatureGroup();
+
+        map.addLayer(editableLayers);
+
+        let drawControl = new L.Control.Draw({
+            position: "topright",
+            draw: {
+                polyline: false,
+                polygon: true,
+                circle: false,
+                circlemarker: false,
+                rectangle: false,
+                marker: false
+            },
+            edit: {
+                featureGroup: editableLayers,
+                remove: true
+            }
+        });
+
+        map.addControl(drawControl);
+
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            let layer = e.layer;
+            editableLayers.addLayer(layer);
+
+
+            console.log("ORGINAL");
+            var latLng = layer.getLatLngs()[0];
+            latLng.forEach(lat_lng => {
+                var result = calculateImageCoordinate(lat_lng);
+            });
+            console.log("ORGINAL");
+
+
+
+            // var margin = -20;
+
+            // var gj = layer.toGeoJSON();
+
+            // var shape = geojsonProject(gj, function (coord) {
+            //     var pt = map.options.crs.latLngToPoint(L.latLng(coord.slice().reverse()), map.getZoom());
+            //     return [pt.x, pt.y];
+            // });
+
+            // var res = new Offset(shape.geometry.coordinates).offset(margin);
+            // var margined = {
+            //     type: 'Feature',
+            //     geometry: {
+            //         type: 'Polygon',
+            //         coordinates: res
+            //     }
+            // };
+
+            // var result = geojsonProject(margined, function (pt) {
+            //     var ll = map.options.crs.pointToLatLng(L.point(pt.slice()), map.getZoom());
+            //     return [ll.lng, ll.lat];
+            // });
+
+            // //margined
+            // var poly_margin = L.geoJSON(result).addTo(editableLayers);
+
+            // console.log("MARGINED");
+            // var points = []
+            // poly_margin.getLayers()[0].getLatLngs()[0].forEach(lat_lng => {
+            //     var result = calculateImageCoordinate(lat_lng);
+            //     points.push(result);
+            // });
+            // console.log("MARGINED");
+
+
+
+
+
+        });
+
+        var calculateImageCoordinate = function (latLng) {
+
+            var clientLatLng = map.project(latLng);
+            var overlayImage = overlay._image;
+
+            var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
+            var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
+
+            var x = clientLatLng.x / xR;
+            var y = clientLatLng.y / yR;
+            console.log(x, y);
+            return [x, y];
+
+        }
+
+
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
