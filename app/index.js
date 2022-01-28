@@ -1,5 +1,9 @@
-const dialog = require('electron').remote.dialog 
+const dialog = require('electron').remote.dialog
 const { app } = require('electron');
+var ffmpeg = require('ffmpeg');
+const path = require('path');
+const { spawn } = require('child_process');
+var cmd=require('node-cmd');
 
 
 
@@ -7,7 +11,7 @@ $(function () {
 
 
     var map = L.map('image-map', {
-        minZoom: 1,
+        minZoom: 0,
         maxZoom: 4,
         center: [0, 0],
         zoom: 1,
@@ -104,15 +108,31 @@ $(function () {
     $("#btnBrows").click(function () {
 
 
-        var dia = dialog.showOpenDialog({ 
+        var dia = dialog.showOpenDialog({
             properties: ['openFile'],
-            filters :[
-                {name:"Video",extensions:['avi']},
-                {name:"Deneme",extensions:['txt']}
+            filters: [
+                { name: "Video", extensions: ['avi'] },
+                { name: "Deneme", extensions: ['txt'] }
             ]
         });
 
         console.log(dia);
+
+        var video_file = dia[0];
+        //__dirname
+
+
+
+     
+        var args = [
+            '-y',
+            '-i', "C:/Users/bbekec/Desktop/file_example_AVI_1280_1_5MG.avi",
+            '-frames', '1', 'c:/app/deneme.jpg'
+        ];
+        var proc = spawn('ffmpeg', args);
+
+
+
 
     });
 

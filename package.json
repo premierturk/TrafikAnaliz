@@ -1,25 +1,23 @@
 {
-  "name": "electron-bootstrap-jquery-quick-start",
+  "name": "trafik.analiz",
   "version": "1.0.0",
-  "description": "Electron-quick-start demo with Bootstrap and jQuery implementations",
+  "description": "Trafik Analizi",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/developerblue/electron-bootstrap-jquery-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "Michael Rooplall",
+  "repository": "https://github.com/premierturk/TrafikAnaliz",
+  "keywords": [],
+  "author": "Premierturk",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^5.0.8"
   },
   "dependencies": {
-    "electron-shortcut": "^0.5.0"
+    "child_process": "^1.0.2",
+    "electron-reload": "^2.0.0-alpha.1",
+    "electron-shortcut": "^0.5.0",
+    "ffmpeg": "^0.0.4",
+    "node-cmd": "^5.0.0"
   }
 }

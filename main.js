@@ -3,6 +3,7 @@ const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const Shortcut = require("electron-shortcut");
 
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -20,6 +21,8 @@ function createWindow () {
       backgroundThrottling :false
     }
   });
+
+  mainWindow.maximize();
 
   var shortcut = new Shortcut("Ctrl+F12", function (e) {
     console.log("openDevTools");
@@ -43,6 +46,10 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+require('electron-reload')(__dirname, {
+  electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
