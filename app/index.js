@@ -129,7 +129,21 @@ $(function () {
             '-i', "C:/Users/bbekec/Desktop/file_example_AVI_1280_1_5MG.avi",
             '-frames', '1', 'c:/app/deneme.jpg'
         ];
-        var proc = spawn('ffmpeg', args);
+        // var proc = spawn('ffmpeg', args);
+
+
+        //const { spawn } = require('child_process');
+        const child = spawn('ffmpeg', args);
+        // use child.stdout.setEncoding('utf8'); if you want text chunks
+        child.stdout.on('data', (chunk) => {
+          // data from the standard output is here as buffers
+          console.log(chunk);
+        });
+        // since these are streams, you can pipe them elsewhere
+        //child.stderr.pipe(dest);
+        child.on('close', (code) => {
+          console.log(code);
+        });
 
 
 
