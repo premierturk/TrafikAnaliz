@@ -7,10 +7,16 @@ var cmd = require('node-cmd');
 const extractFrame = require('ffmpeg-extract-frame');
 const fs = require('fs');
 var sizeOf = require('image-size');
+var ffmpeg = require('fluent-ffmpeg');
 
+
+ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
+ffmpeg.setFfprobePath("/usr/bin/ffprobe");
 
 
 $(function () {
+
+
 
 
     var map = function (url, w, h) {
@@ -111,7 +117,8 @@ $(function () {
 
     $("#btnBrows").click(async function () {
 
-        var savedFile = path.join(__dirname, 'roi.jpg');
+        var folder = path.join(__dirname, 'roi');
+        var savedFile = folder + '/tn.png';
 
         try {
             fs.unlinkSync(savedFile);
@@ -133,23 +140,35 @@ $(function () {
         //     '-frames', '1', savedFile
         // ];
 
-        //const child = spawn('ffmpeg', args);
+        // const child = spawn('ffmpeg', args);
 
         // setTimeout(function(){
         //    map(savedFile); 
         // }, 1000);
 
 
-        await extractFrame({
-            input: video_file,
-            output: savedFile,
-            offset: 1000
-        });
+        // await extractFrame({
+        //     input: video_file,
+        //     output: savedFile,
+        //     offset: 1000
+        // });
+
+        ffmpeg(video_file)
+            .on('end', function () {
+                console.log('Screenshots taken');
+            })
+            .on('error', function (err) {
+                console.error('this error:');
+                console.error(err);
+            }).screenshots({
+                count: 1,
+                folder: folder
+            });
 
         setTimeout(function () {
             var dimensions = sizeOf(savedFile);
             map(savedFile, dimensions.width, dimensions.height);
-        }, 100);
+        }, 2000);
 
 
 
