@@ -3,152 +3,159 @@ const { app } = require('electron');
 var ffmpeg = require('ffmpeg');
 const path = require('path');
 const { spawn } = require('child_process');
-var cmd=require('node-cmd');
+var cmd = require('node-cmd');
+const extractFrame = require('ffmpeg-extract-frame');
+const fs = require('fs');
+var sizeOf = require('image-size');
 
 
 
 $(function () {
 
 
-    var map = L.map('image-map', {
-        minZoom: 0,
-        maxZoom: 4,
-        center: [0, 0],
-        zoom: 1,
-        crs: L.CRS.Simple,
-    });
+    var map = function (url, w, h) {
 
 
-    var w = 5312, h = 4880, url = 'https://www.isu.gov.tr/media/cover/72.jpg';
-
-
-    var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
-    var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
-    var bounds = new L.LatLngBounds(southWest, northEast);
-
-
-    var overlay = L.imageOverlay(url, bounds)
-    overlay.addTo(map);
-
-
-    map.setMaxBounds(bounds);
-
-    map.on("click", function (e) {
-        // calculateImageCoordinate(e.latlng);
-
-
-        var clientLatLng = map.project(e.latlng);
-        var overlayImage = overlay._image;
-
-        var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
-        var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
-
-        var x = clientLatLng.x / xR;
-        var y = clientLatLng.y / yR;
-        console.log("CLICK : " + x, y);
-
-
-    });
-
-
-    let editableLayers = new L.FeatureGroup();
-
-    map.addLayer(editableLayers);
-
-    let drawControl = new L.Control.Draw({
-        position: "topright",
-        draw: {
-            polyline: false,
-            polygon: true,
-            circle: false,
-            circlemarker: false,
-            rectangle: false,
-            marker: false
-        },
-        edit: {
-            featureGroup: editableLayers,
-            remove: true
-        }
-    });
-
-    map.addControl(drawControl);
-
-
-    map.on(L.Draw.Event.CREATED, function (e) {
-        let layer = e.layer;
-        editableLayers.addLayer(layer);
-
-
-        console.log("ORGINAL");
-        var latLng = layer.getLatLngs()[0];
-        latLng.forEach(lat_lng => {
-            var result = calculateImageCoordinate(lat_lng);
+        var map = L.map('image-map', {
+            minZoom: 1,
+            maxZoom: 4,
+            center: [0, 0],
+            zoom: 1,
+            crs: L.CRS.Simple,
         });
-        console.log("ORGINAL");
 
 
-    });
+        var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+        var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+        var bounds = new L.LatLngBounds(southWest, northEast);
 
-    var calculateImageCoordinate = function (latLng) {
 
-        var clientLatLng = map.project(latLng);
-        var overlayImage = overlay._image;
+        var overlay = L.imageOverlay(url, bounds)
+        overlay.addTo(map);
 
-        var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
-        var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
 
-        var x = clientLatLng.x / xR;
-        var y = clientLatLng.y / yR;
-        console.log(x, y);
-        return [x, y];
+        map.setMaxBounds(bounds);
 
+        map.on("click", function (e) {
+            // calculateImageCoordinate(e.latlng);
+
+
+            var clientLatLng = map.project(e.latlng);
+            var overlayImage = overlay._image;
+
+            var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
+            var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
+
+            var x = clientLatLng.x / xR;
+            var y = clientLatLng.y / yR;
+            console.log("CLICK : " + x, y);
+
+
+        });
+
+
+        let editableLayers = new L.FeatureGroup();
+
+        map.addLayer(editableLayers);
+
+        let drawControl = new L.Control.Draw({
+            position: "topright",
+            draw: {
+                polyline: false,
+                polygon: true,
+                circle: false,
+                circlemarker: false,
+                rectangle: false,
+                marker: false
+            },
+            edit: {
+                featureGroup: editableLayers,
+                remove: true
+            }
+        });
+
+        map.addControl(drawControl);
+
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            let layer = e.layer;
+            editableLayers.addLayer(layer);
+
+
+            console.log("ORGINAL");
+            var latLng = layer.getLatLngs()[0];
+            latLng.forEach(lat_lng => {
+                var result = calculateImageCoordinate(lat_lng);
+            });
+            console.log("ORGINAL");
+
+
+        });
+
+        var calculateImageCoordinate = function (latLng) {
+
+            var clientLatLng = map.project(latLng);
+            var overlayImage = overlay._image;
+
+            var yR = overlayImage.clientHeight / overlayImage.naturalHeight;
+            var xR = overlayImage.clientWidth / overlayImage.naturalWidth;
+
+            var x = clientLatLng.x / xR;
+            var y = clientLatLng.y / yR;
+            console.log(x, y);
+            return [x, y];
+
+        }
     }
 
 
-    $("#btnBrows").click(function () {
+    $("#btnBrows").click(async function () {
 
+        var savedFile = path.join(__dirname, 'roi.jpg');
+
+        try {
+            fs.unlinkSync(savedFile);
+        } catch (err) {
+            console.error(err)
+        }
 
         var dia = dialog.showOpenDialog({
             properties: ['openFile'],
             filters: [
-                { name: "Video", extensions: ['avi'] },
-                { name: "Deneme", extensions: ['txt'] }
+                { name: "Video", extensions: ['avi'] }
             ]
         });
-
-        console.log(dia);
-
         var video_file = dia[0];
-        //__dirname
+
+        // var args = [
+        //     '-y',
+        //     '-i', video_file,// "C:/Users/bbekec/Desktop/file_example_AVI_1280_1_5MG.avi",
+        //     '-frames', '1', savedFile
+        // ];
+
+        //const child = spawn('ffmpeg', args);
+
+        // setTimeout(function(){
+        //    map(savedFile); 
+        // }, 1000);
 
 
-
-     
-        var args = [
-            '-y',
-            '-i', "C:/Users/bbekec/Desktop/file_example_AVI_1280_1_5MG.avi",
-            '-frames', '1', 'c:/app/deneme.jpg'
-        ];
-        // var proc = spawn('ffmpeg', args);
-
-
-        //const { spawn } = require('child_process');
-        const child = spawn('ffmpeg', args);
-        // use child.stdout.setEncoding('utf8'); if you want text chunks
-        child.stdout.on('data', (chunk) => {
-          // data from the standard output is here as buffers
-          console.log(chunk);
-        });
-        // since these are streams, you can pipe them elsewhere
-        //child.stderr.pipe(dest);
-        child.on('close', (code) => {
-          console.log(code);
+        await extractFrame({
+            input: video_file,
+            output: savedFile,
+            offset: 1000
         });
 
+        setTimeout(function () {
+            var dimensions = sizeOf(savedFile);
+            map(savedFile, dimensions.width, dimensions.height);
+        }, 100);
 
 
 
     });
+
+
 
 
 });
