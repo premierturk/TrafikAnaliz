@@ -8,10 +8,17 @@ const extractFrame = require('ffmpeg-extract-frame');
 const fs = require('fs');
 var sizeOf = require('image-size');
 var ffmpeg = require('fluent-ffmpeg');
+const process = require('process');
 
 
-ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
-ffmpeg.setFfprobePath("/usr/bin/ffprobe");
+
+
+if (process.platform == "linux") {
+    ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
+    ffmpeg.setFfprobePath("/usr/bin/ffprobe");
+}
+
+
 
 
 $(function () {
@@ -156,6 +163,12 @@ $(function () {
         ffmpeg(video_file)
             .on('end', function () {
                 console.log('Screenshots taken');
+
+                $("#btnBrows").hide();
+
+                    var dimensions = sizeOf(savedFile);
+                    map(savedFile, dimensions.width, dimensions.height);
+              
             })
             .on('error', function (err) {
                 console.error('this error:');
@@ -165,10 +178,7 @@ $(function () {
                 folder: folder
             });
 
-        setTimeout(function () {
-            var dimensions = sizeOf(savedFile);
-            map(savedFile, dimensions.width, dimensions.height);
-        }, 2000);
+    
 
 
 
