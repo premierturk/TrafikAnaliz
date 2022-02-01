@@ -222,11 +222,14 @@ $(function () {
 
             fs.writeFile(jsonFile, JSON.stringify(AllLoops), function (err) {
                 if (err) return console.log(err);
-                console.log('data.json');
+                console.log(jsonFile);
             });
 
             console.log(JSON.stringify(AllLoops));
             const python = spawn('python3', ['vehicleTracking2_d.py', '--date ' + from_epoch, '--json ' + jsonFile, '--input ' + video_file]);
+
+            console.log('python3' + JSON.stringify(['vehicleTracking2_d.py', '--date ' + from_epoch, '--json ' + jsonFile, '--input ' + video_file]));
+
 
             python.stdout.on('data', function (data) {
                 console.log('Pipe data from python script ...' + data.toString());
