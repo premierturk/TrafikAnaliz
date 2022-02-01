@@ -17,9 +17,12 @@
     "child_process": "^1.0.2",
     "electron-shortcut": "^0.5.0",
     "ffmpeg": "^0.0.4",
-    "ffmpeg-extract-frame": "^1.0.2",
+    "ffprobe": "^1.1.2",
+    "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "image-size": "^1.0.1",
-    "node-cmd": "^5.0.0"
+    "moment": "^2.29.1",
+    "node-cmd": "^5.0.0",
+    "notiflix": "^3.2.4"
   }
 }
