@@ -31,7 +31,8 @@ $(function () {
 
     var AllLoops = [];
     var videoTime = "";
-    var videoDuration="";
+    var videoDuration = "";
+    var video_file = "";
 
     var map = function (url, w, h) {
 
@@ -212,26 +213,39 @@ $(function () {
         }
 
         $("#btnRapor").click(async function () {
-            
+
             var from_epoch = moment(videoTime).valueOf();
-            var to_epoch = moment(videoTime).add(parseInt(videoDuration+1), 'seconds').valueOf();
+            var to_epoch = moment(videoTime).add(parseInt(videoDuration + 1), 'seconds').valueOf();
 
-            var data = {
-                From_Time: from_epoch,
-                To_Time: to_epoch,
-                Data: AllLoops
-            }
 
-            console.log(JSON.stringify(data));
+            var jsonFile = __dirname + '\1.json';
 
-            var url_total = "http://31.145.105.240:3000/d/QkVW61x7z/akiilikavsak_total?orgId=1&from=" + from_epoch + "&to="  + to_epoch+ "&kiosk"
+            fs.writeFile(jsonFile, JSON.stringify(AllLoops), function (err) {
+                if (err) return console.log(err);
+                console.log('data.json');
+            });
+
+            console.log(JSON.stringify(AllLoops));
+            const python = spawn('python3', ['vehicleTracking2_d.py', '--date ' + from_epoch, '--json ' + jsonFile, '--input ' + video_file]);
+
+            python.stdout.on('data', function (data) {
+                console.log('Pipe data from python script ...' + data.toString());
+            });
+
+            python.on('close', (code) => {
+                console.log(`child process close all stdio with code ${code}`);
+            });
+
+           
+
+            var url_total = "http://31.145.105.240:3000/d/QkVW61x7z/akiilikavsak_total?orgId=1&from=" + from_epoch + "&to=" + to_epoch + "&kiosk"
             var url_root = "http://31.145.105.240:3000/d/uCc9qaxnz/akillikavsak_root?orgId=1&from=" + from_epoch + "&to=" + to_epoch + "&kiosk"
 
             // shell.openExternal(url_total);
             // shell.openExternal(url_root);
 
 
-            
+
             const BrowserWindow = remote.BrowserWindow;
             const win_total = new BrowserWindow({
                 height: 768,
@@ -295,7 +309,7 @@ $(function () {
                     { name: "Video", extensions: ['avi', 'mp4'] }
                 ]
             });
-            var video_file = dia[0];
+            video_file = dia[0];
 
             // var args = [
             //     '-y',
@@ -323,11 +337,11 @@ $(function () {
 
             ffprobe(video_file, { path: ffprobeStatic.path }, function (err, info) {
                 if (err) return done(err);
-                console.log(info);     
-                
+                console.log(info);
+
                 videoDuration = info.streams[0].duration;
 
-              });
+            });
 
 
 
